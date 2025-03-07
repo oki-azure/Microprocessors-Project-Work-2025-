@@ -10,6 +10,7 @@ This repository contains project implementations for the lab sessions. Each proj
 ## Guidelines
 - Ensure that all submissions are original and adhere to the project requirements.  
 - Follow the structured format for documentation and code submission.  
+- Make sure you folder is saved using your program and your group number eg. coe_group04
 - Refer to the provided submission deadlines to stay on track.  
 
 📌 **Submission Deadline:** March 28, 2025  
