@@ -1,0 +1,85 @@
+We have a 4 lane intersection of four roads, each lane has a traffic light that consists of green, yellow and red.
+
+Lane 1:
+Green is connected to pin 2 of the arduino
+Yellow is connected to pin 3 of the arduino
+Red is connected to pin 4 of the arduino
+
+Lane 2:
+Green is connected to pin 5 of the arduino
+Yellow is connected to pin 6 of the arduino
+Red is connected to pin 7 of the arduino
+
+Lane 3:
+Green is connected to pin 8 of the arduino
+Yellow is connected to pin 9 of the arduino
+Red is connected to pin 10 of the arduino
+
+Lane 4:
+Green is connected to pin 11 of the arduino
+Yellow is connected to pin 12 of the arduino
+Red is connected to pin 13 of the arduino
+
+Traffic sequence:
+Cycle 1: Lane 1 Green, Lane 2 Red, Lane 3 Red, Lane 4 Red
+Cycle 2: Lane 1 Green and Yellow, Lane 2 Red and yellow, Lane 3 Red, Lane 4 Red
+Cycle 3: Lane 1 Red, Lane 2 Green, Lane 3 Red, Lane 4 Red
+Cycle 4: Lane 1 Red, Lane 2 Green and Yellow, Lane 3 Red and Yellow, Lane 4 Red
+Cycle 5: Lane 1 Red, Lane 2 Red, Lane 3 Green, Lane 4 Red
+Cycle 6: Lane 1 Red, Lane 2 Red, Lane 3 Green and Yellow, Lane 4 Red and Yellow
+Cycle 7: Lane 1 Red, Lane 2 Red, Lane 3 Red, Lane 4 Green
+Cycle 8: Lane 1 Red and Yellow, Lane 2 Red, Lane 3 Red, Lane 4 Green and Yellow
+
+For the density based control, we're using an IR sensor for the density based priority assignment
+Since we're simulating the project in Proteus, we can't really get input to the sensor to do the density calculation and what not, so instead, we'll use the test pin of the IR sensor 
+We'll connect a logic toggle to it and use that to simulate, high density and low density
+
+Here're the density based priority assignment specifications: 
+When no lane has density priority, the timed cycle is used 
+When a lane is given priority, the timed cycle should proceed, but the next lane should be the lane with priority 
+When priority is switched to another lane, next in the timed cycle should be the prioritized lane 
+When priority is taken off a lane and not assigned to another lane, timed cycle should proceed and the next lane should be the next lane in the actual timed cycle 
+So with the priority toggled, we'll be jumping between prioritized lanes until no lane is priotized 
+Also when transitioning between lanes: The green light in the current lane should go off, it's yellow light should come on, also the red light in the next lane should go off and its yellow light come one, simultaneously 
+Then the next and current lanes' yellow lights should go off, the red for current comes on and the green for the next should come on and should be simultaneously like in a real-life road traffic system
+
+Handling multiple density toggles; multiple lanes with equal density
+Since we're using logic toggles to simulate density in Proteus, the concept of "equal density" translates to multiple toggles being ON at the same time. 
+This is a valid scenario in your simulation, and we need to handle it properly.
+
+Each toggle represents the density of a lane.
+
+If a toggle is ON (HIGH), it means the lane has high density.
+
+If a toggle is OFF (LOW), it means the lane has low density.
+
+If two or more toggles are ON at the same time, it simulates multiple lanes having high density simultaneously.
+
+Since the toggles are binary (ON/OFF), "equal density" simply means multiple toggles are ON.
+
+The system needs to decide which lane to prioritize when multiple toggles are ON.
+
+When multiple toggles are ON, the system should follow a deterministic and fair policy to decide which lane gets priority. 
+
+Here are some options:
+
+Priority Based on Lane Number:
+
+Assign a fixed priority order (e.g., Lane 1 > Lane 2 > Lane 3 > Lane 4).
+
+If multiple toggles are ON, the lane with the highest priority gets the green light.
+
+Round-Robin (Cyclic) Priority:
+
+Cycle through the lanes with ON toggles in a fixed order.
+
+This ensures fairness over time.
+
+First-Come-First-Served:
+
+The lane whose toggle was turned ON first gets priority.
+
+This requires tracking the order in which toggles are turned ON.
+
+Implementation in the Code
+We decided to implement a priority-based approach (e.g., Lane 1 > Lane 2 > Lane 3 > Lane 4) to handle multiple toggles being ON.
